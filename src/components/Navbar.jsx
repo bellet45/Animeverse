@@ -1,12 +1,16 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Menu, User, PlayCircle, History, Heart, List as ListIcon } from 'lucide-react';
+import { Search, Menu, User, PlayCircle, History, Heart, List as ListIcon, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useStore } from '../store/useStore';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const navigate = useNavigate();
+  
+  const { user, login, logout } = useStore();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -63,10 +67,29 @@ export default function Navbar() {
           <Link to="/history" className="p-2 text-gray-300 hover:text-white hover:bg-gray-800/80 rounded-full transition-all">
             <History size={20} />
           </Link>
-          <button className="flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-full transition-all font-medium text-sm shadow-[0_0_15px_rgba(124,58,237,0.3)]">
-            <User size={18} />
-            <span>Acceder</span>
-          </button>
+          
+          {user ? (
+            <div className="relative">
+              <button onClick={() => setShowUserMenu(!showUserMenu)} className="flex items-center gap-2 focus:outline-none">
+                <img src={user.photoURL} alt={user.displayName} className="w-8 h-8 rounded-full border-2 border-purple-500 object-cover" />
+              </button>
+              {showUserMenu && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-xl">
+                  <div className="px-4 py-3 border-b border-gray-800">
+                    <p className="text-sm font-medium text-white truncate">{user.displayName}</p>
+                  </div>
+                  <button onClick={() => { logout(); setShowUserMenu(false); }} className="w-full flex items-center gap-2 px-4 py-3 text-red-400 hover:bg-gray-800 transition-colors text-sm text-left">
+                    <LogOut size={16} /> Cerrar sesión
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button onClick={login} className="flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-full transition-all font-medium text-sm shadow-[0_0_15px_rgba(124,58,237,0.3)]">
+              <User size={18} />
+              <span>Acceder</span>
+            </button>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
