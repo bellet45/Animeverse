@@ -37,7 +37,10 @@ export const logoutUser = async () => {
 
 export const syncUserData = async (userId, data) => {
   try {
-    await setDoc(doc(db, "users", userId), data, { merge: true });
+    // Firestore no soporta valores 'undefined'.
+    // Usamos JSON.parse/stringify para limpiar cualquier undefined en los objetos anidados.
+    const sanitizedData = JSON.parse(JSON.stringify(data));
+    await setDoc(doc(db, "users", userId), sanitizedData, { merge: true });
   } catch (error) {
     console.error("Error syncing user data:", error);
   }
