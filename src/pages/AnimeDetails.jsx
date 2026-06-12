@@ -35,6 +35,23 @@ export default function AnimeDetails() {
     }
   };
 
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: `Ver ${anime.title} en AnimeVerse`,
+          text: anime.synopsis,
+          url: window.location.href,
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('¡Enlace copiado al portapapeles!');
+      }
+    } catch (error) {
+      console.log('Error sharing', error);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 pt-24 min-h-screen">
@@ -116,7 +133,7 @@ export default function AnimeDetails() {
                 )}
               </div>
 
-              <button className="flex items-center justify-center gap-2 glass hover:bg-white/10 text-white py-2 rounded-xl transition-colors font-medium text-sm">
+              <button onClick={handleShare} className="flex items-center justify-center gap-2 glass hover:bg-white/10 text-white py-2 rounded-xl transition-colors font-medium text-sm">
                 <Share2 size={18} /> Compartir
               </button>
             </div>
