@@ -1,15 +1,17 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getAnimeInfo } from '../api/animeflv';
-import { Play, Star, Calendar, Heart, ListVideo, Share2 } from 'lucide-react';
+import { Play, Star, Calendar, Share2, List as ListIcon, ChevronDown, ListVideo } from 'lucide-react';
 import { useStore } from '../store/useStore';
+import { useState } from 'react';
 
 export default function AnimeDetails() {
   const { id } = useParams();
+  const [showListMenu, setShowListMenu] = useState(false);
   
-  const favorites = useStore(state => state.favorites);
-  const addFavorite = useStore(state => state.addFavorite);
-  const removeFavorite = useStore(state => state.removeFavorite);
+  const myList = useStore(state => state.myList) || [];
+  const addToList = useStore(state => state.addToList);
+  const removeFromList = useStore(state => state.removeFromList);
 
   const { data: anime, isLoading } = useQuery({
     queryKey: ['anime', id],
@@ -17,14 +19,19 @@ export default function AnimeDetails() {
     enabled: !!id
   });
 
-  const isFavorite = anime ? favorites.some(f => f.id === anime.id) : false;
+  const animeInList = anime ? myList.find(a => a.id === anime.id) : null;
 
-  const toggleFavorite = () => {
-    if (!anime) return;
-    if (isFavorite) {
-      removeFavorite(anime.id);
-    } else {
-      addFavorite(anime);
+  const handleSetStatus = (status) => {
+    if (anime) {
+      addToList(anime, status);
+      setShowListMenu(false);
+    }
+  };
+
+  const handleRemove = () => {
+    if (anime) {
+      removeFromList(anime.id);
+      setShowListMenu(false);
     }
   };
 
@@ -76,12 +83,39 @@ export default function AnimeDetails() {
             </Link>
 
             <div className="grid grid-cols-2 gap-2">
-              <button 
-                onClick={toggleFavorite}
-                className={`flex items-center justify-center gap-2 glass py-2 rounded-xl transition-colors font-medium text-sm ${isFavorite ? 'text-red-400 hover:bg-red-500/10' : 'text-white hover:bg-white/10'}`}
-              >
-                <Heart size={18} fill={isFavorite ? "currentColor" : "none"} /> Favorito
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={() => setShowListMenu(!showListMenu)}
+                  className={`w-full flex items-center justify-center gap-2 glass py-2 rounded-xl transition-colors font-medium text-sm ${animeInList ? 'text-purple-400 border-purple-500/30' : 'text-white hover:bg-white/10'}`}
+                >
+                  <ListIcon size={18} /> 
+                  {animeInList ? (
+                    animeInList.status === 'viendo' ? 'Viendo' : 
+                    animeInList.status === 'pendiente' ? 'Pendiente' : 'Terminado'
+                  ) : 'Mi Lista'}
+                  <ChevronDown size={14} className={`transition-transform ${showListMenu ? 'rotate-180' : ''}`} />
+                </button>
+
+                {showListMenu && (
+                  <div className="absolute top-full left-0 w-full mt-2 bg-gray-900 border border-gray-800 rounded-xl overflow-hidden z-20 shadow-xl">
+                    <button onClick={() => handleSetStatus('viendo')} className="w-full text-left px-4 py-2 hover:bg-gray-800 text-sm flex items-center gap-2">
+                      📺 Viendo
+                    </button>
+                    <button onClick={() => handleSetStatus('pendiente')} className="w-full text-left px-4 py-2 hover:bg-gray-800 text-sm flex items-center gap-2">
+                      🕒 Pendiente
+                    </button>
+                    <button onClick={() => handleSetStatus('terminado')} className="w-full text-left px-4 py-2 hover:bg-gray-800 text-sm flex items-center gap-2">
+                      ✅ Terminado
+                    </button>
+                    {animeInList && (
+                      <button onClick={handleRemove} className="w-full text-left px-4 py-2 hover:bg-red-500/20 text-red-400 text-sm border-t border-gray-800 flex items-center gap-2">
+                        ❌ Eliminar
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <button className="flex items-center justify-center gap-2 glass hover:bg-white/10 text-white py-2 rounded-xl transition-colors font-medium text-sm">
                 <Share2 size={18} /> Compartir
               </button>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api'
+  baseURL: 'https://animeverse-c8bj.onrender.com/api',
 });
 
 export const search = async (query) => {

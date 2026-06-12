@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Menu, User, PlayCircle, History, Heart } from 'lucide-react';
+import { Search, Menu, User, PlayCircle, History, Heart, List as ListIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -57,8 +57,8 @@ export default function Navbar() {
             />
           </form>
 
-          <Link to="/favorites" className="p-2 text-gray-300 hover:text-white hover:bg-gray-800/80 rounded-full transition-all">
-            <Heart size={20} />
+          <Link to="/mylist" className="p-2 text-gray-300 hover:text-white hover:bg-gray-800/80 rounded-full transition-all">
+            <ListIcon size={20} />
           </Link>
           <Link to="/history" className="p-2 text-gray-300 hover:text-white hover:bg-gray-800/80 rounded-full transition-all">
             <History size={20} />

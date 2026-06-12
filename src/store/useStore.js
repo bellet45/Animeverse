@@ -4,19 +4,26 @@ import { persist } from 'zustand/middleware';
 export const useStore = create(
   persist(
     (set) => ({
-      favorites: [],
+      myList: [],
       history: [],
       user: null,
       
       setUser: (user) => set({ user }),
       
-      addFavorite: (anime) => set((state) => {
-        if (state.favorites.find(f => f.id === anime.id)) return state;
-        return { favorites: [...state.favorites, anime] };
+      addToList: (anime, status) => set((state) => {
+        // status can be: 'viendo', 'pendiente', 'terminado'
+        const existing = state.myList.find(a => a.id === anime.id);
+        if (existing) {
+          // Update status if it exists
+          return {
+            myList: state.myList.map(a => a.id === anime.id ? { ...a, status } : a)
+          };
+        }
+        return { myList: [...state.myList, { ...anime, status }] };
       }),
       
-      removeFavorite: (id) => set((state) => ({
-        favorites: state.favorites.filter(f => f.id !== id)
+      removeFromList: (id) => set((state) => ({
+        myList: state.myList.filter(a => a.id !== id)
       })),
       
       addToHistory: (anime, episode, time) => set((state) => {

@@ -5,9 +5,8 @@ import Footer from '../components/Footer';
 import Catalog from '../pages/Catalog';
 import AnimeDetails from '../pages/AnimeDetails';
 import Watch from '../pages/Watch';
-import Favorites from '../pages/Favorites';
+import MyList from '../pages/MyList';
 import History from '../pages/History';
-import Profile from '../pages/Profile';
 
 export default function AppRouter() {
   return (
@@ -17,12 +16,11 @@ export default function AppRouter() {
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/catalog" element={<Catalog />} />
             <Route path="/anime/:id" element={<AnimeDetails />} />
             <Route path="/watch/:id/:episode" element={<Watch />} />
-            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/catalog" element={<Catalog />} />
+            <Route path="/mylist" element={<MyList />} />
             <Route path="/history" element={<History />} />
-            <Route path="/profile" element={<Profile />} />
           </Routes>
         </main>
         <Footer />
