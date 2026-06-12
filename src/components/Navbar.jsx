@@ -34,9 +34,7 @@ export default function Navbar() {
         
         {/* Logo */}
         <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 group">
-          <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-lg p-1">
-            <PlayCircle size={28} className="text-white" />
-          </div>
+          <img src="/favicon.png" alt="AnimeVerse Logo" className="w-10 h-10 rounded-full shadow-[0_0_15px_rgba(124,58,237,0.5)] group-hover:scale-105 transition-transform" />
           <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 group-hover:to-white transition-all">
             AnimeVerse
           </span>
